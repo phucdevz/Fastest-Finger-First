@@ -1,0 +1,1 @@
+# Liệt kê thư viện Python sử dụng (socket, Tkinter/PyQt nếu có) 

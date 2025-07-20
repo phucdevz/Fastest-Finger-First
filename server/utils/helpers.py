@@ -1,0 +1,3 @@
+# Hàm tiện ích, đọc file câu hỏi, format message, ...
+# Phụ trách: Nguyễn Trường Phục
+# Vai trò: Backend/Server & Database Developer 
