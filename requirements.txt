@@ -1,1 +1,62 @@
-# Liệt kê thư viện Python sử dụng (socket, Tkinter/PyQt nếu có) 
+# Fastest Finger First - Server Dependencies
+# Liệt kê thư viện Python sử dụng (socket, Tkinter/PyQt nếu có)
+
+# Core Python libraries (built-in, no installation needed)
+# - socket (built-in)
+# - threading (built-in)
+# - json (built-in)
+# - time (built-in)
+# - logging (built-in)
+# - dataclasses (built-in, Python 3.7+)
+# - enum (built-in)
+# - typing (built-in)
+# - os (built-in)
+# - sys (built-in)
+# - signal (built-in)
+# - argparse (built-in)
+# - hashlib (built-in)
+# - re (built-in)
+# - datetime (built-in)
+
+# Optional GUI libraries (for server UI)
+# tkinter (built-in with Python, but may need system packages on Linux)
+# PyQt5 (optional, for advanced GUI)
+# PySide2 (optional, alternative to PyQt5)
+
+# Development and testing dependencies (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=22.0.0
+flake8>=5.0.0
+mypy>=1.0.0
+
+# Documentation (optional)
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.0.0
+
+# Performance monitoring (optional)
+psutil>=5.9.0
+
+# Configuration management (optional, can use built-in json)
+pyyaml>=6.0.0
+
+# Database support (optional, for future expansion)
+# sqlite3 (built-in)
+# pymongo>=4.0.0  # MongoDB support
+# redis>=4.0.0    # Redis support
+
+# Web interface (optional, for future expansion)
+# flask>=2.0.0
+# fastapi>=0.100.0
+# uvicorn>=0.20.0
+
+# Security (optional)
+# cryptography>=3.4.0
+# bcrypt>=4.0.0
+
+# Logging enhancements (optional)
+# colorlog>=6.0.0
+
+# Testing and development tools
+# coverage>=6.0.0
+# tox>=3.25.0 
