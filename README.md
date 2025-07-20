@@ -443,8 +443,8 @@ python server/main.py --log-level DEBUG
 - **Nguyễn Phạm Thiên Phước**: Testing & Documentation
 
 ### Issues
-- GitHub Issues: [Create Issue](https://github.com/your-username/Fastest-Finger-First/issues)
-- Email: support@fastestfingerfirst.com
+- GitHub Issues: [Create Issue](https://github.com/phucdevz/Fastest-Finger-First/issues)
+- Email: agencyluuvong@gmail.com
 
 ---
 
@@ -456,4 +456,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 *Ngày tạo: 20/07/2025*  
 *Phiên bản: 1.0*  
-*Nhóm phát triển: Fastest Finger First Team* 
+*Nhóm phát triển: Zero Latency Team* 
