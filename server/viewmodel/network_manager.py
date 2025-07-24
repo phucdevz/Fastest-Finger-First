@@ -262,7 +262,7 @@ class NetworkManager:
             self.server_socket.settimeout(1.0)
             
             self.running = True
-            logger.info(f"Server started on {self.host}:{port}")
+            logger.info(f"Server started on {self.host}:{self.port}")
             
             # Start connection monitoring thread
             monitor_thread = threading.Thread(target=self._connection_monitor, daemon=True)

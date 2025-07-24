@@ -83,7 +83,9 @@ class ConfigManager:
     def save_config(self) -> None:
         """Save configuration to file"""
         try:
-            os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
+            dir_name = os.path.dirname(self.config_file)
+            if dir_name:
+                os.makedirs(dir_name, exist_ok=True)
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
             logger.info(f"Saved configuration to {self.config_file}")
@@ -232,12 +234,12 @@ class MessageFormatter:
         Returns:
             Formatted success message
         """
+        result = {'message': message}
+        if data:
+            result.update(data)
         return {
             'type': 'success',
-            'data': {
-                'message': message,
-                **data if data else {}
-            },
+            'data': result,
             'timestamp': time.time()
         }
     

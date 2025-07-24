@@ -454,6 +454,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Ngày tạo: 20/07/2025*  
+*Ngày tạo: 20/07/2025*  s
 *Phiên bản: 1.0*  
 *Nhóm phát triển: Zero Latency Team* 

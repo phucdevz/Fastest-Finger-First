@@ -70,8 +70,10 @@ class FastestFingerFirstServer:
         max_size = self.config_manager.get('logging.max_size', 10485760)  # 10MB
         backup_count = self.config_manager.get('logging.backup_count', 5)
         
-        # Create logs directory
-        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        # Create logs directory if needed
+        dir_name = os.path.dirname(log_file)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
         
         # Configure logging
         logging.basicConfig(
