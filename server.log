@@ -1,0 +1,71 @@
+2025-08-01 20:46:02,943 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:46:02,954 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:46:28,753 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:46:28,762 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:50:03,590 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:50:03,596 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:53:08,151 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:53:08,157 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:54:11,553 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:54:11,561 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:56:17,379 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:56:17,385 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:56:19,445 - server.server - INFO - Server stopped
+2025-08-01 20:56:19,505 - server.server - INFO - New connection from ('127.0.0.1', 55570)
+2025-08-01 20:56:20,443 - server.server - INFO - New connection from ('127.0.0.1', 55571)
+2025-08-01 20:56:20,446 - ClientHandler-('127.0.0.1', 55571) - INFO - Client Player2 connected from ('127.0.0.1', 55571)
+2025-08-01 20:56:20,487 - server.game_manager - INFO - Player Player2 joined the game
+2025-08-01 20:56:36,985 - ClientHandler-('127.0.0.1', 55571) - ERROR - Error receiving message from Player2: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:56:36,986 - server.game_manager - INFO - Player Player2 left the game
+2025-08-01 20:56:36,986 - ClientHandler-('127.0.0.1', 55571) - INFO - Client Player2 disconnected
+2025-08-01 20:56:36,990 - ClientHandler-('127.0.0.1', 55570) - ERROR - Error receiving message from None: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:56:36,991 - ClientHandler-('127.0.0.1', 55570) - INFO - Client None disconnected
+2025-08-01 20:56:42,248 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:56:42,255 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:56:44,299 - server.server - INFO - New connection from ('127.0.0.1', 55583)
+2025-08-01 20:56:44,302 - ClientHandler-('127.0.0.1', 55583) - INFO - Client Player1 connected from ('127.0.0.1', 55583)
+2025-08-01 20:56:44,335 - server.game_manager - INFO - Player Player1 joined the game
+2025-08-01 20:56:45,276 - server.server - INFO - New connection from ('127.0.0.1', 55587)
+2025-08-01 20:56:45,278 - ClientHandler-('127.0.0.1', 55587) - INFO - Client Player2 connected from ('127.0.0.1', 55587)
+2025-08-01 20:56:45,309 - server.game_manager - INFO - Player Player2 joined the game
+2025-08-01 20:56:46,274 - server.database - INFO - Created new game with ID: 1
+2025-08-01 20:56:46,275 - server.game_manager - INFO - Game started with 2 players
+2025-08-01 20:56:46,275 - server.server - INFO - Game started
+2025-08-01 20:56:47,396 - server.server - INFO - Sent question 1
+2025-08-01 20:57:17,434 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:21,443 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:23,857 - ClientHandler-('127.0.0.1', 55583) - ERROR - Error receiving message from Player1: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:57:23,858 - server.game_manager - INFO - Player Player1 left the game
+2025-08-01 20:57:23,858 - ClientHandler-('127.0.0.1', 55583) - INFO - Client Player1 disconnected
+2025-08-01 20:57:24,870 - ClientHandler-('127.0.0.1', 55587) - ERROR - Error receiving message from Player2: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:57:24,871 - server.game_manager - INFO - Player Player2 left the game
+2025-08-01 20:57:24,871 - ClientHandler-('127.0.0.1', 55587) - INFO - Client Player2 disconnected
+2025-08-01 20:57:25,459 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:27,119 - server.game_manager - INFO - Set 30 questions for the game
+2025-08-01 20:57:27,125 - server.server - INFO - Server started on localhost:5555
+2025-08-01 20:57:29,474 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:33,493 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:37,513 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:41,531 - server.game_manager - INFO - Question ended. Correct answers: 0
+2025-08-01 20:57:44,220 - server.server - INFO - Server stopped
+2025-08-01 20:57:44,296 - server.server - INFO - New connection from ('127.0.0.1', 55785)
+2025-08-01 20:57:48,967 - server.server - INFO - New connection from ('127.0.0.1', 55794)
+2025-08-01 20:57:48,969 - ClientHandler-('127.0.0.1', 55794) - INFO - Client player1 connected from ('127.0.0.1', 55794)
+2025-08-01 20:57:49,012 - server.game_manager - INFO - Player player1 joined the game
+2025-08-01 20:58:58,452 - ClientHandler-('127.0.0.1', 55785) - ERROR - Error receiving message from None: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:58:58,453 - ClientHandler-('127.0.0.1', 55785) - INFO - Client None disconnected
+2025-08-01 20:59:03,456 - ClientHandler-('127.0.0.1', 55794) - ERROR - Error receiving message from player1: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-08-01 20:59:03,457 - server.game_manager - INFO - Player player1 left the game
+2025-08-01 20:59:03,458 - ClientHandler-('127.0.0.1', 55794) - INFO - Client player1 disconnected
+2025-08-01 21:00:10,132 - server.server - INFO - New connection from ('127.0.0.1', 56057)
+2025-08-01 21:00:10,135 - ClientHandler-('127.0.0.1', 56057) - INFO - Client payer1 connected from ('127.0.0.1', 56057)
+2025-08-01 21:00:10,149 - server.game_manager - INFO - Player payer1 joined the game
+2025-08-01 21:00:18,792 - server.server - INFO - New connection from ('127.0.0.1', 56061)
+2025-08-01 21:00:18,794 - ClientHandler-('127.0.0.1', 56061) - INFO - Client player2 connected from ('127.0.0.1', 56061)
+2025-08-01 21:00:18,809 - server.game_manager - INFO - Player player2 joined the game
+2025-08-01 21:00:19,250 - server.database - INFO - Created new game with ID: 2
+2025-08-01 21:00:19,252 - server.game_manager - INFO - Game started with 3 players
+2025-08-01 21:00:19,253 - server.server - INFO - Game started
+2025-08-01 21:00:20,274 - server.server - INFO - Sent question 1
+2025-08-01 21:00:30,156 - server.game_manager - INFO - Player player2 answered in 9.90s
+2025-08-01 21:00:36,028 - server.game_manager - INFO - Player payer1 answered in 15.77s

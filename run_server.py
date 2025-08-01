@@ -1,35 +1,83 @@
 #!/usr/bin/env python3
 """
-Script để chạy server Vua Tốc Độ
+Script chạy server Fastest Finger First
 """
 
 import sys
 import os
+import json
+import logging
+from pathlib import Path
 
-# Add server directory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'server'))
+# Thêm thư mục gốc vào path
+sys.path.insert(0, str(Path(__file__).parent))
 
-from server.main import GameServer
+from server.server import GameServer
+from server.game_manager import Question
+from data.questions_generator import QuestionGenerator
+
+def load_questions_from_json(filename: str = "data/questions.json"):
+    """Load câu hỏi từ file JSON"""
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        questions = []
+        for q_data in data.get('questions', []):
+            question = Question(
+                question_text=q_data['question_text'],
+                options=q_data['options'],
+                correct_answer=q_data['correct_answer'],
+                category=q_data.get('category', 'general'),
+                difficulty=q_data.get('difficulty', 'medium')
+            )
+            questions.append(question)
+        
+        print(f"Loaded {len(questions)} questions from {filename}")
+        return questions
+        
+    except FileNotFoundError:
+        print(f"Question file {filename} not found. Generating questions...")
+        return generate_questions()
+    except Exception as e:
+        print(f"Error loading questions: {e}")
+        return generate_questions()
+
+def generate_questions():
+    """Tạo câu hỏi tự động"""
+    generator = QuestionGenerator()
+    questions = generator.generate_question_set(count=30, difficulty='medium')
+    print(f"Generated {len(questions)} questions")
+    return questions
 
 def main():
-    print("🚀 Khởi động Server Vua Tốc Độ...")
-    print("=" * 50)
+    """Main function"""
+    print("=" * 60)
+    print("    FASTEST FINGER FIRST - SERVER")
+    print("=" * 60)
+    
+    # Load câu hỏi
+    questions = load_questions_from_json()
+    
+    # Tạo server
+    server = GameServer()
+    
+    # Thiết lập câu hỏi cho game
+    server.game_manager.set_questions(questions)
+    
+    print(f"Server ready with {len(questions)} questions")
+    print("Press Ctrl+C to stop the server")
+    print("=" * 60)
     
     try:
-        server = GameServer()
-        print("✅ Server đã sẵn sàng!")
-        print("📡 Đang lắng nghe kết nối...")
-        print("=" * 50)
-        
+        # Khởi động server
         server.start()
-        
     except KeyboardInterrupt:
-        print("\n⏹️  Dừng server...")
+        print("\nShutting down server...")
         server.stop()
-        print("✅ Server đã dừng!")
     except Exception as e:
-        print(f"❌ Lỗi: {e}")
-        sys.exit(1)
+        print(f"Error: {e}")
+        server.stop()
 
 if __name__ == "__main__":
     main() 

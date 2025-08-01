@@ -1,19 +1,23 @@
 # Core dependencies
-tkinter
 socket
 threading
 json
 time
 datetime
+random
 os
 sys
-typing
+logging
 
-# Optional: For enhanced UI (if needed)
-# pillow>=9.0.0
-# pygame>=2.0.0
+# GUI (optional)
+tkinter
 
-# Development dependencies
-# pytest>=7.0.0
-# black>=22.0.0
-# flake8>=4.0.0 
+# Testing
+unittest
+pytest
+
+# Data handling
+sqlite3
+
+# Network utilities
+select 
