@@ -1,1 +1,1 @@
-# Client view package 
+# View module for client UI 

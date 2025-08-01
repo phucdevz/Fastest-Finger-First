@@ -1,0 +1,21 @@
+{
+  "players": [
+    {
+      "id": "player1",
+      "name": "Player 1",
+      "total_games": 0,
+      "total_points": 0,
+      "best_score": 0,
+      "average_score": 0,
+      "correct_answers": 0,
+      "total_answers": 0
+    }
+  ],
+  "leaderboard": [
+    {
+      "name": "Player 1",
+      "score": 0,
+      "rank": 1
+    }
+  ]
+} 

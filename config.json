@@ -1,0 +1,26 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 5000,
+    "max_players": 4,
+    "question_time": 30,
+    "wait_time": 10
+  },
+  "client": {
+    "host": "localhost",
+    "port": 5000,
+    "timeout": 5
+  },
+  "game": {
+    "questions_per_round": 10,
+    "points_per_correct": 10,
+    "bonus_points_fast": 5
+  },
+  "ui": {
+    "theme": "dark",
+    "window_width": 1200,
+    "window_height": 800,
+    "font_family": "Arial",
+    "font_size": 14
+  }
+} 

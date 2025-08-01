@@ -1,271 +1,229 @@
-#!/usr/bin/env python3
-"""
-Fastest Finger First - Server Main Entry Point
-Entry point khởi động server
-
-Phụ trách: Nguyễn Trường Phục
-Vai trò: Backend/Server & Database Developer
-"""
-
-import sys
+import socket
+import threading
+import json
+import time
+import random
+from datetime import datetime
 import os
-import signal
-import argparse
-import logging
-import logging.handlers
-from typing import Optional
+import sys
 
-# Add project root to path
+# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from server.model.question import QuestionBank
-from server.model.player import PlayerManager
-from server.viewmodel.game_manager import GameManager, GameConfig
-from server.viewmodel.network_manager import NetworkManager
-from server.utils.helpers import ConfigManager, file_manager
-from server.view.server_ui import ServerUI
+from server.model.game_room import GameRoom
+from server.model.player import Player
+from server.utils.config_loader import ConfigLoader
+from server.utils.question_manager import QuestionManager
+from server.utils.logger import Logger
 
-class FastestFingerFirstServer:
-    """
-    Main server class for Fastest Finger First game
-    
-    Features:
-    - Complete server lifecycle management
-    - Configuration management
-    - Logging setup
-    - Graceful shutdown
-    - Health monitoring
-    """
-    
-    def __init__(self, config_file: Optional[str] = None):
-        """
-        Initialize server
-        
-        Args:
-            config_file: Optional path to configuration file
-        """
-        self.config_file = config_file or 'config.json'
-        self.config_manager = ConfigManager(self.config_file)
-        
-        # Initialize components
-        self.question_bank: Optional[QuestionBank] = None
-        self.player_manager: Optional[PlayerManager] = None
-        self.game_manager: Optional[GameManager] = None
-        self.network_manager: Optional[NetworkManager] = None
-        self.server_ui: Optional[ServerUI] = None
-        
-        # Server state
+class GameServer:
+    def __init__(self):
+        self.config = ConfigLoader.load_config()
+        self.logger = Logger()
+        self.question_manager = QuestionManager()
+        self.rooms = {}
+        self.players = {}
+        self.server_socket = None
         self.running = False
         
-        # Setup logging
-        self._setup_logging()
-        
-        logger = logging.getLogger(__name__)
-        logger.info("Fastest Finger First Server initializing...")
-    
-    def _setup_logging(self) -> None:
-        """Setup logging configuration"""
-        log_level = self.config_manager.get('logging.level', 'INFO')
-        log_file = self.config_manager.get('logging.file', 'server.log')
-        max_size = self.config_manager.get('logging.max_size', 10485760)  # 10MB
-        backup_count = self.config_manager.get('logging.backup_count', 5)
-        
-        # Create logs directory if needed
-        dir_name = os.path.dirname(log_file)
-        if dir_name:
-            os.makedirs(dir_name, exist_ok=True)
-        
-        # Configure logging
-        logging.basicConfig(
-            level=getattr(logging, log_level.upper()),
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.handlers.RotatingFileHandler(
-                    log_file, maxBytes=max_size, backupCount=backup_count
-                ),
-                logging.StreamHandler()
-            ]
-        )
-    
-    def initialize_components(self) -> bool:
-        """
-        Initialize all server components
-        
-        Returns:
-            True if initialization successful, False otherwise
-        """
-        logger = logging.getLogger(__name__)
-        
+    def start(self):
+        """Khởi động server"""
         try:
-            # Validate configuration
-            config_errors = self.config_manager.validate_config()
-            if config_errors:
-                logger.error(f"Configuration errors: {config_errors}")
-                return False
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket.bind((self.config['server']['host'], self.config['server']['port']))
+            self.server_socket.listen(10)
             
-            # Initialize question bank
-            questions_file = self.config_manager.get('data.questions_file', 'data/questions.json')
-            self.question_bank = QuestionBank(questions_file)
-            logger.info(f"Question bank initialized with {len(self.question_bank.questions)} questions")
+            self.running = True
+            self.logger.info(f"Server started on {self.config['server']['host']}:{self.config['server']['port']}")
             
-            # Initialize player manager
-            self.player_manager = PlayerManager()
-            logger.info("Player manager initialized")
+            # Start cleanup thread
+            cleanup_thread = threading.Thread(target=self._cleanup_rooms, daemon=True)
+            cleanup_thread.start()
             
-            # Initialize game manager
-            game_config = GameConfig(
-                min_players=self.config_manager.get('game.min_players', 2),
-                max_players=self.config_manager.get('game.max_players', 10),
-                questions_per_game=self.config_manager.get('game.questions_per_game', 10),
-                question_time_limit=self.config_manager.get('game.question_time_limit', 30),
-                countdown_duration=self.config_manager.get('game.countdown_duration', 5),
-                answer_review_duration=self.config_manager.get('game.answer_review_duration', 3)
-            )
-            
-            self.game_manager = GameManager(self.question_bank, self.player_manager)
-            self.game_manager.update_config(game_config)
-            logger.info("Game manager initialized")
-            
-            # Initialize network manager
-            host = self.config_manager.get('server.host', 'localhost')
-            port = self.config_manager.get('server.port', 5000)
-            
-            self.network_manager = NetworkManager(
-                self.player_manager, 
-                self.game_manager,
-                host=host,
-                port=port
-            )
-            logger.info(f"Network manager initialized for {host}:{port}")
-            
-            # Initialize server UI (optional)
-            try:
-                self.server_ui = ServerUI(self.game_manager, self.network_manager)
-                logger.info("Server UI initialized")
-            except Exception as e:
-                logger.warning(f"Server UI initialization failed: {e}")
-            
-            logger.info("All components initialized successfully")
-            return True
-            
+            while self.running:
+                try:
+                    client_socket, address = self.server_socket.accept()
+                    self.logger.info(f"New connection from {address}")
+                    
+                    # Handle each client in a separate thread
+                    client_thread = threading.Thread(
+                        target=self._handle_client,
+                        args=(client_socket, address),
+                        daemon=True
+                    )
+                    client_thread.start()
+                    
+                except Exception as e:
+                    self.logger.error(f"Error accepting connection: {e}")
+                    
         except Exception as e:
-            logger.error(f"Component initialization failed: {e}")
-            return False
-    
-    def start(self) -> None:
-        """Start the server"""
-        logger = logging.getLogger(__name__)
-        
-        if not self.initialize_components():
-            logger.error("Failed to initialize components")
-            sys.exit(1)
-        
-        # Setup signal handlers for graceful shutdown
-        signal.signal(signal.SIGINT, self._signal_handler)
-        signal.signal(signal.SIGTERM, self._signal_handler)
-        
-        self.running = True
-        logger.info("Starting Fastest Finger First Server...")
-        
-        try:
-            # Start network manager (this will block)
-            self.network_manager.start_server()
-            
-        except KeyboardInterrupt:
-            logger.info("Server interrupted by user")
-        except Exception as e:
-            logger.error(f"Server error: {e}")
+            self.logger.error(f"Server error: {e}")
         finally:
             self.stop()
     
-    def stop(self) -> None:
-        """Stop the server gracefully"""
-        logger = logging.getLogger(__name__)
+    def _handle_client(self, client_socket, address):
+        """Xử lý kết nối từ client"""
+        try:
+            while self.running:
+                data = client_socket.recv(4096)
+                if not data:
+                    break
+                    
+                message = json.loads(data.decode('utf-8'))
+                self._process_message(client_socket, message, address)
+                
+        except Exception as e:
+            self.logger.error(f"Error handling client {address}: {e}")
+        finally:
+            self._disconnect_client(client_socket, address)
+    
+    def _process_message(self, client_socket, message, address):
+        """Xử lý message từ client"""
+        try:
+            msg_type = message.get('type')
+            
+            if msg_type == 'JOIN_ROOM':
+                self._handle_join_room(client_socket, message, address)
+            elif msg_type == 'ANSWER':
+                self._handle_answer(client_socket, message, address)
+            elif msg_type == 'READY':
+                self._handle_ready(client_socket, message, address)
+            elif msg_type == 'DISCONNECT':
+                self._handle_disconnect(client_socket, message, address)
+            else:
+                self.logger.warning(f"Unknown message type: {msg_type}")
+                
+        except Exception as e:
+            self.logger.error(f"Error processing message: {e}")
+    
+    def _handle_join_room(self, client_socket, message, address):
+        """Xử lý yêu cầu tham gia phòng"""
+        player_name = message.get('player_name', f'Player_{address[1]}')
+        room_id = message.get('room_id', 'default')
         
-        if not self.running:
+        # Tạo hoặc tham gia phòng
+        if room_id not in self.rooms:
+            self.rooms[room_id] = GameRoom(room_id, self.config, self.question_manager)
+        
+        room = self.rooms[room_id]
+        
+        # Tạo player mới
+        player = Player(player_name, client_socket, address)
+        self.players[address] = player
+        
+        # Thêm player vào phòng
+        success = room.add_player(player)
+        
+        if success:
+            response = {
+                'type': 'JOIN_SUCCESS',
+                'room_id': room_id,
+                'players': room.get_players_info(),
+                'status': room.get_status()
+            }
+            self._send_message(client_socket, response)
+            
+            # Thông báo cho các player khác
+            self._broadcast_to_room(room_id, {
+                'type': 'PLAYER_JOINED',
+                'player_name': player_name,
+                'players': room.get_players_info()
+            }, exclude_address=address)
+            
+        else:
+            response = {
+                'type': 'JOIN_FAILED',
+                'message': 'Room is full or game in progress'
+            }
+            self._send_message(client_socket, response)
+    
+    def _handle_answer(self, client_socket, message, address):
+        """Xử lý câu trả lời từ player"""
+        player = self.players.get(address)
+        if not player:
             return
+            
+        room_id = message.get('room_id')
+        answer = message.get('answer')
+        answer_time = message.get('answer_time', time.time())
         
-        logger.info("Stopping server...")
+        if room_id in self.rooms:
+            room = self.rooms[room_id]
+            room.process_answer(player, answer, answer_time)
+    
+    def _handle_ready(self, client_socket, message, address):
+        """Xử lý player sẵn sàng"""
+        player = self.players.get(address)
+        if not player:
+            return
+            
+        room_id = message.get('room_id')
+        if room_id in self.rooms:
+            room = self.rooms[room_id]
+            room.player_ready(player)
+    
+    def _handle_disconnect(self, client_socket, message, address):
+        """Xử lý ngắt kết nối"""
+        self._disconnect_client(client_socket, address)
+    
+    def _disconnect_client(self, client_socket, address):
+        """Xử lý ngắt kết nối client"""
+        try:
+            player = self.players.get(address)
+            if player:
+                # Xóa player khỏi phòng
+                for room in self.rooms.values():
+                    room.remove_player(player)
+                
+                del self.players[address]
+            
+            client_socket.close()
+            self.logger.info(f"Client {address} disconnected")
+            
+        except Exception as e:
+            self.logger.error(f"Error disconnecting client {address}: {e}")
+    
+    def _send_message(self, client_socket, message):
+        """Gửi message đến client"""
+        try:
+            data = json.dumps(message).encode('utf-8')
+            client_socket.send(data)
+        except Exception as e:
+            self.logger.error(f"Error sending message: {e}")
+    
+    def _broadcast_to_room(self, room_id, message, exclude_address=None):
+        """Gửi message đến tất cả player trong phòng"""
+        if room_id in self.rooms:
+            room = self.rooms[room_id]
+            for player in room.players:
+                if exclude_address is None or player.address != exclude_address:
+                    self._send_message(player.socket, message)
+    
+    def _cleanup_rooms(self):
+        """Dọn dẹp phòng trống"""
+        while self.running:
+            time.sleep(30)  # Check every 30 seconds
+            empty_rooms = []
+            for room_id, room in self.rooms.items():
+                if len(room.players) == 0:
+                    empty_rooms.append(room_id)
+            
+            for room_id in empty_rooms:
+                del self.rooms[room_id]
+                self.logger.info(f"Removed empty room: {room_id}")
+    
+    def stop(self):
+        """Dừng server"""
         self.running = False
-        
-        # Stop game manager
-        if self.game_manager:
-            self.game_manager.stop_game()
-            logger.info("Game manager stopped")
-        
-        # Stop network manager
-        if self.network_manager:
-            self.network_manager.stop_server()
-            logger.info("Network manager stopped")
-        
-        # Save player statistics
-        if self.player_manager:
-            self.player_manager.save_player_stats()
-            logger.info("Player statistics saved")
-        
-        logger.info("Server stopped")
-    
-    def _signal_handler(self, signum, frame) -> None:
-        """Handle shutdown signals"""
-        logger = logging.getLogger(__name__)
-        logger.info(f"Received signal {signum}, shutting down...")
-        self.stop()
-    
-    def get_status(self) -> dict:
-        """Get server status information"""
-        if not self.running:
-            return {'status': 'stopped'}
-        
-        status = {
-            'status': 'running',
-            'uptime': 0,  # TODO: Calculate uptime
-            'components': {}
-        }
-        
-        if self.question_bank:
-            status['components']['question_bank'] = {
-                'questions_count': len(self.question_bank.questions),
-                'categories': list(self.question_bank.categories)
-            }
-        
-        if self.player_manager:
-            status['components']['player_manager'] = {
-                'total_players': len(self.player_manager),
-                'active_players': len(self.player_manager.get_active_players())
-            }
-        
-        if self.game_manager:
-            status['components']['game_manager'] = self.game_manager.get_game_status()
-        
-        if self.network_manager:
-            status['components']['network_manager'] = self.network_manager.get_server_status()
-        
-        return status
-
-def main():
-    """Main entry point"""
-    parser = argparse.ArgumentParser(description='Fastest Finger First Server')
-    parser.add_argument('--config', '-c', help='Configuration file path')
-    parser.add_argument('--host', help='Server host address')
-    parser.add_argument('--port', type=int, help='Server port')
-    parser.add_argument('--log-level', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
-                       help='Logging level')
-    
-    args = parser.parse_args()
-    
-    # Create server instance
-    server = FastestFingerFirstServer(args.config)
-    
-    # Override config with command line arguments
-    if args.host:
-        server.config_manager.set('server.host', args.host)
-    if args.port:
-        server.config_manager.set('server.port', args.port)
-    if args.log_level:
-        server.config_manager.set('logging.level', args.log_level)
-    
-    # Start server
-    server.start()
+        if self.server_socket:
+            self.server_socket.close()
+        self.logger.info("Server stopped")
 
 if __name__ == "__main__":
-    main() 
+    server = GameServer()
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
+        server.stop() 

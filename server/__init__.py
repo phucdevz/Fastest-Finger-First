@@ -1,1 +1,1 @@
-# Server package for Fastest Finger First game 
+# Server module for Vua Toc Do game 

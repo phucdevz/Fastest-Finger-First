@@ -1,1 +1,1 @@
-# Server model package 
+# Model module for game entities 

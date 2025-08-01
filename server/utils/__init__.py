@@ -1,1 +1,1 @@
-# Server utils package 
+# Utils module for server utilities 

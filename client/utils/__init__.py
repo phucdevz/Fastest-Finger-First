@@ -1,1 +1,1 @@
-# Client utils package 
+# Utils module for client utilities 

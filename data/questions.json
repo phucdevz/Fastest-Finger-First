@@ -1,15 +1,84 @@
 {
   "questions": [
     {
-      "id": "1",
-      "question": "What is the capital of Vietnam?",
-      "options": ["Hanoi", "HCMC", "Hue", "Da Nang"],
-      "correct_answer": "Hanoi",
-      "explanation": "Hanoi is the capital of Vietnam.",
-      "category": "Geography",
-      "difficulty": "easy",
-      "time_limit": 30,
-      "points": 10
+      "id": 1,
+      "question": "Thủ đô của Việt Nam là gì?",
+      "options": ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Huế"],
+      "correct_answer": 0,
+      "category": "Địa lý",
+      "difficulty": "easy"
+    },
+    {
+      "id": 2,
+      "question": "1 + 1 = ?",
+      "options": ["1", "2", "3", "4"],
+      "correct_answer": 1,
+      "category": "Toán học",
+      "difficulty": "easy"
+    },
+    {
+      "id": 3,
+      "question": "Ai là người sáng lập Microsoft?",
+      "options": ["Steve Jobs", "Bill Gates", "Mark Zuckerberg", "Elon Musk"],
+      "correct_answer": 1,
+      "category": "Công nghệ",
+      "difficulty": "medium"
+    },
+    {
+      "id": 4,
+      "question": "Năm 2024 có bao nhiêu ngày?",
+      "options": ["365", "366", "364", "367"],
+      "correct_answer": 1,
+      "category": "Toán học",
+      "difficulty": "medium"
+    },
+    {
+      "id": 5,
+      "question": "Ngôn ngữ lập trình nào được tạo bởi Guido van Rossum?",
+      "options": ["Java", "Python", "C++", "JavaScript"],
+      "correct_answer": 1,
+      "category": "Công nghệ",
+      "difficulty": "medium"
+    },
+    {
+      "id": 6,
+      "question": "Thành phố nào được gọi là 'Thành phố không ngủ'?",
+      "options": ["Paris", "New York", "Tokyo", "London"],
+      "correct_answer": 1,
+      "category": "Địa lý",
+      "difficulty": "easy"
+    },
+    {
+      "id": 7,
+      "question": "2 x 8 = ?",
+      "options": ["14", "16", "18", "20"],
+      "correct_answer": 1,
+      "category": "Toán học",
+      "difficulty": "easy"
+    },
+    {
+      "id": 8,
+      "question": "Ai là tác giả của 'Romeo và Juliet'?",
+      "options": ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+      "correct_answer": 1,
+      "category": "Văn học",
+      "difficulty": "medium"
+    },
+    {
+      "id": 9,
+      "question": "Hành tinh nào gần Mặt Trời nhất?",
+      "options": ["Trái Đất", "Sao Kim", "Sao Thủy", "Sao Hỏa"],
+      "correct_answer": 2,
+      "category": "Khoa học",
+      "difficulty": "medium"
+    },
+    {
+      "id": 10,
+      "question": "10 + 5 x 2 = ?",
+      "options": ["20", "25", "30", "15"],
+      "correct_answer": 0,
+      "category": "Toán học",
+      "difficulty": "hard"
     }
   ]
-}
+} 

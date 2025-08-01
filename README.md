@@ -1,459 +1,198 @@
-# Fastest Finger First - Vua Tốc Độ
+# Vua Tốc Độ - Fastest Finger First
 
-Hướng dẫn setup, chạy, mô tả dự án
+Một mini game đa người chơi sử dụng mô hình MVVM và Socket Multi Client-Server.
 
-Phụ trách: Nguyễn Phạm Thiên Phước
-Vai trò: Testing & Documentation Lead
+## 🎮 Tính năng
 
-## 📋 Tổng quan dự án
+- **Đa người chơi**: Hỗ trợ tối đa 4 người chơi cùng lúc
+- **Giao diện đẹp**: UI hiện đại với theme tối
+- **Real-time**: Cập nhật điểm số và bảng xếp hạng theo thời gian thực
+- **Hệ thống điểm**: Tính điểm dựa trên độ chính xác và tốc độ trả lời
+- **Phòng chờ**: Hệ thống phòng chờ với tín hiệu sẵn sàng
 
-**Fastest Finger First** là một game trả lời câu hỏi trực tuyến theo thời gian thực, sử dụng kiến trúc Client-Server với giao thức Socket. Người chơi sẽ thi đấu để trả lời câu hỏi nhanh nhất và chính xác nhất.
+## 🏗️ Kiến trúc
 
-### 🎯 Tính năng chính
+### Mô hình MVVM
+- **Model**: Quản lý dữ liệu game (Player, GameRoom, Question)
+- **View**: Giao diện người dùng (GUI với Tkinter)
+- **ViewModel**: Xử lý logic và giao tiếp giữa Model và View
 
-- **Multiplayer Real-time**: Hỗ trợ nhiều người chơi cùng lúc
-- **Câu hỏi đa dạng**: Hỗ trợ nhiều loại câu hỏi và chủ đề
-- **Hệ thống điểm**: Tính điểm dựa trên tốc độ và độ chính xác
-- **Bảng xếp hạng**: Theo dõi và hiển thị xếp hạng real-time
-- **Lưu trữ dữ liệu**: Lưu lịch sử trận đấu và thống kê người chơi
-- **Giao diện admin**: Quản lý server và theo dõi trận đấu
+### Socket Multi Client-Server
+- **Server**: Xử lý đa luồng, quản lý phòng, tính điểm
+- **Client**: Kết nối qua socket, giao diện người dùng
+- **Giao thức**: JSON message qua TCP socket
 
-### 🏗️ Kiến trúc hệ thống
+## 📁 Cấu trúc Project
 
-- **Server**: Python Socket Server với kiến trúc MVVM
-- **Client**: Python Client với giao diện console/GUI
-- **Database**: JSON file cho câu hỏi và lịch sử
-- **Communication**: Socket TCP/IP
-- **Architecture**: MVVM Pattern
-
----
+```
+Fastest-Finger-First/
+├── config.json              # Cấu hình chính
+├── data/
+│   ├── player_stats.json    # Thống kê người chơi
+│   └── questions.json       # Bộ câu hỏi
+├── server/
+│   ├── main.py             # Server chính
+│   ├── model/
+│   │   ├── player.py       # Model Player
+│   │   └── game_room.py    # Model GameRoom
+│   └── utils/
+│       ├── config_loader.py # Load cấu hình
+│       ├── question_manager.py # Quản lý câu hỏi
+│       └── logger.py       # Ghi log
+├── client/
+│   ├── main.py             # Client chính
+│   ├── viewmodel/
+│   │   └── game_viewmodel.py # ViewModel
+│   ├── view/
+│   │   └── main_window.py  # Giao diện chính
+│   └── utils/
+│       └── config_loader.py # Load cấu hình
+├── requirements.txt         # Dependencies
+└── README.md              # Hướng dẫn
+```
 
 ## 🚀 Cài đặt và Chạy
 
-### Yêu cầu hệ thống
+### 1. Cài đặt dependencies
+```bash
+# Python 3.7+ required
+python --version
 
-- Python 3.7 hoặc cao hơn
-- Hệ điều hành: Windows, macOS, Linux
-- RAM: Tối thiểu 512MB
-- Ổ cứng: 100MB trống
+# Install dependencies (optional - most are built-in)
+pip install -r requirements.txt
+```
 
-### Cài đặt
+### 2. Chạy Server
+```bash
+cd server
+python main.py
+```
 
-1. **Clone repository**
-   ```bash
-   git clone https://github.com/your-username/Fastest-Finger-First.git
-   cd Fastest-Finger-First
-   ```
+### 3. Chạy Client
+```bash
+cd client
+python main.py
+```
 
-2. **Cài đặt dependencies (tùy chọn)**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 4. Chạy nhiều Client
+Mở nhiều terminal và chạy client để test đa người chơi.
 
-3. **Chạy server**
-   ```bash
-   # Chạy với cấu hình mặc định
-   python server/main.py
-   
-   # Chạy với cấu hình tùy chỉnh
-   python server/main.py --host 0.0.0.0 --port 5000 --log-level INFO
-   ```
+## 🎯 Cách chơi
 
-### Cấu hình
+1. **Kết nối**: Nhập tên và mã phòng
+2. **Phòng chờ**: Chờ người chơi khác và bấm "SẴN SÀNG"
+3. **Chơi game**: Trả lời câu hỏi nhanh nhất có thể
+4. **Tính điểm**: 
+   - Đáp án đúng: +10 điểm
+   - Trả lời nhanh (<5s): +5 điểm bonus
+   - Trả lời nhanh (<10s): +2 điểm bonus
 
-Server sẽ tự động tạo file `config.json` với cấu hình mặc định:
+## ⚙️ Cấu hình
+
+Chỉnh sửa `config.json` để thay đổi:
 
 ```json
 {
   "server": {
     "host": "localhost",
     "port": 5000,
-    "max_connections": 50,
-    "timeout": 60
+    "max_players": 4,
+    "question_time": 30,
+    "wait_time": 10
   },
   "game": {
-    "min_players": 2,
-    "max_players": 10,
-    "questions_per_game": 10,
-    "question_time_limit": 30,
-    "countdown_duration": 5,
-    "answer_review_duration": 3
-  },
-  "logging": {
-    "level": "INFO",
-    "file": "server.log",
-    "max_size": 10485760,
-    "backup_count": 5
-  },
-  "data": {
-    "questions_file": "data/questions.json",
-    "player_stats_file": "data/player_stats.json",
-    "game_history_file": "data/game_history.json"
+    "questions_per_round": 10,
+    "points_per_correct": 10,
+    "bonus_points_fast": 5
   }
 }
 ```
 
----
+## 🧪 Testing
 
-## 📁 Cấu trúc dự án
+### Test đơn giản
+1. Chạy server
+2. Chạy 2-3 client
+3. Tham gia cùng phòng
+4. Bấm sẵn sàng và chơi
 
-```
-fastest-finger-first/
-│
-├── server/                    # Backend Server
-│   ├── main.py               # Entry point khởi động server
-│   ├── model/
-│   │   ├── question.py       # Quản lý câu hỏi và bộ đề
-│   │   ├── player.py         # Thông tin người chơi
-│   │   └── scoreboard.py     # Bảng điểm và lịch sử
-│   ├── viewmodel/
-│   │   ├── game_manager.py   # Điều phối game flow
-│   │   └── network_manager.py# Quản lý socket và kết nối
-│   ├── view/
-│   │   └── server_ui.py      # Giao diện admin (tùy chọn)
-│   └── utils/
-│       └── helpers.py        # Hàm tiện ích
-│
-├── client/                    # Frontend Client
-│   ├── main.py               # Entry point client
-│   ├── model/
-│   │   ├── player.py         # Thông tin user local
-│   │   └── question.py       # Câu hỏi nhận được
-│   ├── viewmodel/
-│   │   └── game_viewmodel.py # Logic xử lý client
-│   ├── view/
-│   │   └── client_ui.py      # Giao diện người chơi
-│   └── utils/
-│       └── helpers.py        # Hàm tiện ích client
-│
-├── data/                      # Dữ liệu
-│   ├── questions.json        # Bộ câu hỏi
-│   ├── player_stats.json     # Thống kê người chơi
-│   └── game_history.json     # Lịch sử trận đấu
-│
-├── docs/                      # Tài liệu
-│   ├── project_review.md     # Phân công dự án
-│   ├── report.md             # Báo cáo dự án
-│   └── presentation.pptx     # Slide thuyết trình
-│
-├── requirements.txt           # Dependencies
-├── README.md                 # Hướng dẫn này
-└── config.json               # Cấu hình server
+### Test kết nối
+```bash
+# Test server
+telnet localhost 5000
+
+# Test client
+python client/main.py
 ```
 
----
+## 📊 Tính năng nâng cao
 
-## 👥 Phân công thành viên
+### Thêm câu hỏi
+Chỉnh sửa `data/questions.json`:
 
-### 🎯 **Nguyễn Trường Phục** - Backend/Server & Database
-- `server/main.py` - Entry point server
-- `server/model/question.py` - Quản lý câu hỏi
-- `server/model/player.py` - Thông tin người chơi
-- `server/model/scoreboard.py` - Bảng điểm
-- `server/utils/helpers.py` - Hàm tiện ích
-
-### 🎯 **Nguyễn Đức Lượng** - Client Logic & ViewModel
-- `client/main.py` - Entry point client
-- `client/viewmodel/game_viewmodel.py` - Logic client
-- `client/model/player.py` - Thông tin user
-- `client/model/question.py` - Câu hỏi local
-- `client/utils/helpers.py` - Hàm tiện ích client
-
-### 🎯 **Lê Đức Anh** - UI/View Developer
-- `client/view/client_ui.py` - Giao diện người chơi
-- `server/view/server_ui.py` - Giao diện admin
-- `data/questions.json` - Bộ câu hỏi test
-
-### 🎯 **Nguyễn Phạm Thiên Phước** - Testing & Documentation
-- `data/questions.json` - Bộ câu hỏi hoàn chỉnh
-- `docs/report.md` - Báo cáo dự án
-- `docs/presentation.pptx` - Slide thuyết trình
-- `README.md` - Hướng dẫn dự án
-
----
-
-## 🎮 Cách chơi
-
-### Kết nối
-1. Chạy server: `python server/main.py`
-2. Chạy client: `python client/main.py`
-3. Nhập tên người chơi và kết nối
-
-### Luật chơi
-1. **Chờ phòng**: Đợi đủ số người chơi tối thiểu
-2. **Đếm ngược**: 5 giây chuẩn bị
-3. **Trả lời câu hỏi**: 
-   - Mỗi câu hỏi có thời gian giới hạn
-   - Trả lời nhanh nhất và đúng được nhiều điểm
-   - Điểm = (Thời gian còn lại / Tổng thời gian) × Điểm câu hỏi
-4. **Xem kết quả**: Hiển thị đáp án và xếp hạng
-5. **Kết thúc**: Hiển thị người thắng cuộc
-
-### Điểm số
-- **Đúng**: Điểm dựa trên tốc độ trả lời
-- **Sai**: 0 điểm
-- **Không trả lời**: 0 điểm
-
----
-
-## 🔧 API Reference
-
-### Server Messages
-
-#### Connection
 ```json
 {
-  "type": "connect",
-  "data": {
-    "player_name": "PlayerName"
+  "id": 11,
+  "question": "Câu hỏi mới?",
+  "options": ["A", "B", "C", "D"],
+  "correct_answer": 0,
+  "category": "Toán học",
+  "difficulty": "easy"
+}
+```
+
+### Thay đổi theme
+Trong `config.json`:
+```json
+{
+  "ui": {
+    "theme": "light",
+    "window_width": 1200,
+    "window_height": 800
   }
 }
 ```
-
-#### Join Game
-```json
-{
-  "type": "join_game",
-  "data": {}
-}
-```
-
-#### Answer Question
-```json
-{
-  "type": "answer",
-  "data": {
-    "answer": "A",
-    "answer_time": 5.2
-  }
-}
-```
-
-### Client Messages
-
-#### Question
-```json
-{
-  "type": "question",
-  "question_id": "1",
-  "question": "What is the capital of Vietnam?",
-  "options": ["Hanoi", "HCMC", "Da Nang", "Hue"],
-  "time_limit": 30,
-  "question_number": 1,
-  "total_questions": 10
-}
-```
-
-#### Answer Review
-```json
-{
-  "type": "answer_review",
-  "correct_answer": "Hanoi",
-  "explanation": "Hanoi is the capital of Vietnam",
-  "correct_answers": [
-    {
-      "player_id": "1",
-      "player_name": "Player1",
-      "answer_time": 2.5
-    }
-  ],
-  "current_rankings": [...]
-}
-```
-
----
-
-## 🛠️ Development
-
-### Chạy tests
-```bash
-# Cài đặt pytest
-pip install pytest
-
-# Chạy tests
-pytest tests/
-```
-
-### Code formatting
-```bash
-# Cài đặt black
-pip install black
-
-# Format code
-black server/ client/
-```
-
-### Type checking
-```bash
-# Cài đặt mypy
-pip install mypy
-
-# Check types
-mypy server/ client/
-```
-
----
-
-## 📊 Monitoring
-
-### Logs
-- Server logs: `server.log`
-- Log level: DEBUG, INFO, WARNING, ERROR
-- Log rotation: 10MB per file, 5 backup files
-
-### Metrics
-- Active connections
-- Games played
-- Questions answered
-- Player statistics
-
-### Health check
-```bash
-# Kiểm tra trạng thái server
-curl http://localhost:5000/health
-```
-
----
-
-## 🔒 Security
-
-### Input Validation
-- Sanitize player names
-- Validate answer options
-- Prevent path traversal
-
-### Rate Limiting
-- Connection limits
-- Message frequency limits
-- Timeout handling
-
-### Data Protection
-- Secure file operations
-- Backup creation
-- Error handling
-
----
-
-## 🚀 Deployment
-
-### Production Setup
-1. **Environment**
-   ```bash
-   export PYTHONPATH=/path/to/Fastest-Finger-First
-   export LOG_LEVEL=INFO
-   ```
-
-2. **Service (systemd)**
-   ```ini
-   [Unit]
-   Description=Fastest Finger First Server
-   After=network.target
-   
-   [Service]
-   Type=simple
-   User=gameuser
-   WorkingDirectory=/path/to/Fastest-Finger-First
-   ExecStart=/usr/bin/python3 server/main.py
-   Restart=always
-   
-   [Install]
-   WantedBy=multi-user.target
-   ```
-
-3. **Firewall**
-   ```bash
-   # Allow game port
-   sudo ufw allow 5000
-   ```
-
-### Docker (Optional)
-```dockerfile
-FROM python:3.9-slim
-
-WORKDIR /app
-COPY . .
-
-RUN pip install -r requirements.txt
-
-EXPOSE 5000
-
-CMD ["python", "server/main.py"]
-```
-
----
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Lỗi kết nối
+- Kiểm tra server đã chạy chưa
+- Kiểm tra port 5000 có bị block không
+- Kiểm tra firewall
 
-1. **Port already in use**
-   ```bash
-   # Change port
-   python server/main.py --port 5001
-   ```
+### Lỗi giao diện
+- Kiểm tra Python version (3.7+)
+- Kiểm tra tkinter đã cài chưa
 
-2. **Permission denied**
-   ```bash
-   # Check file permissions
-   chmod +x server/main.py
-   ```
+### Lỗi câu hỏi
+- Kiểm tra file `data/questions.json`
+- Kiểm tra format JSON
 
-3. **Import errors**
-   ```bash
-   # Set PYTHONPATH
-   export PYTHONPATH=/path/to/project
-   ```
+## 📝 Logs
 
-### Debug Mode
-```bash
-# Enable debug logging
-python server/main.py --log-level DEBUG
-```
+Logs được lưu trong thư mục `logs/`:
+- `server_YYYYMMDD.log`: Log server
+- Console output: Log real-time
 
----
+## 🤝 Đóng góp
 
-## 📈 Roadmap
-
-### Version 1.0 (Current)
-- ✅ Basic multiplayer functionality
-- ✅ Question management
-- ✅ Score tracking
-- ✅ Real-time communication
-
-### Version 1.1 (Planned)
-- 🔄 Web interface
-- 🔄 Database integration
-- 🔄 Authentication system
-- 🔄 Tournament mode
-
-### Version 2.0 (Future)
-- 📋 Mobile app
-- 📋 Voice chat
-- 📋 AI opponents
-- 📋 Global leaderboards
-
----
-
-## 📞 Support
-
-### Team Contact
-- **Nguyễn Trường Phục**: Backend development
-- **Nguyễn Đức Lượng**: Client development  
-- **Lê Đức Anh**: UI/UX design
-- **Nguyễn Phạm Thiên Phước**: Testing & Documentation
-
-### Issues
-- GitHub Issues: [Create Issue](https://github.com/phucdevz/Fastest-Finger-First/issues)
-- Email: agencyluuvong@gmail.com
-
----
+1. Fork project
+2. Tạo feature branch
+3. Commit changes
+4. Push to branch
+5. Tạo Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - xem file LICENSE để biết thêm chi tiết.
+
+## 👥 Team
+
+- **Backend/Server**: Quản lý server, socket, game logic
+- **Client Logic**: ViewModel, xử lý client logic
+- **UI/UX**: Giao diện người dùng, animations
+- **Testing**: Unit tests, integration tests
 
 ---
 
-*Ngày tạo: 20/07/2025*  s
-*Phiên bản: 1.0*  
-*Nhóm phát triển: Zero Latency Team* 
+**Vua Tốc Độ** - Fastest Finger First Game 🏆 
