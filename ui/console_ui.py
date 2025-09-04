@@ -1,4 +1,4 @@
-"""
+
 Console UI cho Fastest Finger First
 Giao diện console đẹp và dễ sử dụng
 """
