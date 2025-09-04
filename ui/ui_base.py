@@ -1,5 +1,5 @@
 """
-Base class cho UI interface
+Base class  UI interface
 """
 
 from abc import ABC, abstractmethod
