@@ -1,5 +1,5 @@
 """
-GUI Interface cho Fastest Finger First sử dụng Tkinter
+GUI Interface Fastest Finger First sử dụng Tkinter
 """
 
 import tkinter as tk
