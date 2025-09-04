@@ -199,3 +199,4 @@ class GUIInterface(UIBase):
     def update(self):
         """Cập nhật UI"""
         pass 
+
